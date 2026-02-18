@@ -17,21 +17,22 @@ export default function MiniTOC({ sections }) {
     );
 
     headings.forEach((_, i) => {
-      const el = document.getElementById(`section-${i}`);
+      const idx = sections.indexOf(headings[i]);
+      const el = document.getElementById(`section-${idx}`);
       if (el) observer.observe(el);
     });
 
     return () => observer.disconnect();
-  }, [headings]);
+  }, [headings, sections]);
 
   if (headings.length < 2) return null;
 
   return (
-    <nav className="hidden 2xl:block fixed right-8 top-24 w-56">
-      <p className="text-xs font-semibold uppercase tracking-wider mb-3" style={{ color: 'var(--color-text-muted)' }}>
-        On this page
+    <nav className="hidden 2xl:block fixed right-8 top-20 w-52">
+      <p className="text-[11px] font-semibold uppercase tracking-[0.08em] mb-3" style={{ color: 'var(--color-text-muted)' }}>
+        On This Page
       </p>
-      <div className="space-y-1" style={{ borderLeft: '2px solid var(--color-border-bronze)' }}>
+      <div style={{ borderLeft: '1px solid var(--color-separator)' }}>
         {headings.map((h, i) => {
           const id = `section-${sections.indexOf(h)}`;
           const isActive = activeId === id;
@@ -39,15 +40,15 @@ export default function MiniTOC({ sections }) {
             <a
               key={i}
               href={`#${id}`}
-              className="block pl-3 py-1 text-xs transition-all leading-relaxed"
+              className="block pl-3 py-1.5 text-[12px] transition-all leading-[1.5]"
               style={{
                 color: isActive ? 'var(--color-bronze)' : 'var(--color-text-muted)',
                 borderLeft: isActive ? '2px solid var(--color-bronze)' : '2px solid transparent',
-                marginLeft: '-2px',
+                marginLeft: '-1px',
                 fontWeight: isActive ? 600 : 400,
               }}
             >
-              {h.content.replace(/[^\w\s—]/g, '').trim()}
+              {h.content.replace(/[^\w\s—-]/g, '').trim()}
             </a>
           );
         })}
