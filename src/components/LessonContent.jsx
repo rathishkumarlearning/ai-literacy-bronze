@@ -5,7 +5,7 @@ import MiniTOC from './MiniTOC';
 function renderMarkdown(text) {
   let html = text.replace(/\*\*(.*?)\*\*/g, '<strong style="color:var(--color-text-primary);font-weight:600">$1</strong>');
   html = html.replace(/\*(.*?)\*/g, '<em>$1</em>');
-  html = html.replace(/`(.*?)`/g, '<code style="background:var(--color-bg-card);padding:2px 7px;border-radius:5px;font-family:var(--font-mono);font-size:0.88em;border:1px solid var(--color-border)">$1</code>');
+  html = html.replace(/`(.*?)`/g, '<code style="background:var(--color-bg-tertiary);padding:2px 7px;border-radius:5px;font-family:var(--font-mono);font-size:0.88em;border:1px solid var(--color-border)">$1</code>');
   html = html.replace(/\n\n/g, '</p><p style="margin-top:1em">');
   html = html.replace(/\n/g, '<br/>');
   return html;
@@ -14,50 +14,53 @@ function renderMarkdown(text) {
 function InfoBox({ type, content }) {
   const configs = {
     tip: {
-      bg: 'rgba(48, 209, 88, 0.06)',
-      border: 'var(--color-success)',
+      borderColor: '#06b6d4',
+      bg: 'rgba(6,182,212,0.06)',
       icon: (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--color-success)' }}>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#06b6d4" strokeWidth="2">
           <path d="M9 18h6M10 22h4M12 2a7 7 0 0 1 4 12.7V17H8v-2.3A7 7 0 0 1 12 2z"/>
         </svg>
       ),
       label: 'Tip',
-      labelColor: 'var(--color-success)',
+      labelColor: '#06b6d4',
     },
     warning: {
-      bg: 'rgba(255, 214, 10, 0.06)',
-      border: 'var(--color-warning)',
+      borderColor: '#f59e0b',
+      bg: 'rgba(245,158,11,0.06)',
       icon: (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--color-warning)' }}>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#f59e0b" strokeWidth="2">
           <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0zM12 9v4M12 17h.01"/>
         </svg>
       ),
       label: 'Warning',
-      labelColor: 'var(--color-warning)',
+      labelColor: '#f59e0b',
     },
     info: {
-      bg: 'rgba(100, 210, 255, 0.06)',
-      border: 'var(--color-info)',
+      borderColor: '#CD7F32',
+      bg: 'rgba(205,127,50,0.06)',
       icon: (
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--color-info)' }}>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#CD7F32" strokeWidth="2">
           <circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/>
         </svg>
       ),
-      label: 'Note',
-      labelColor: 'var(--color-info)',
+      label: 'Info',
+      labelColor: '#CD7F32',
     },
   };
   const c = configs[type] || configs.info;
 
   return (
-    <aside className="my-8 rounded-xl overflow-hidden animate-fade-in-up" style={{ backgroundColor: c.bg, border: `1px solid ${c.border}20` }}>
-      <div className="flex items-center gap-2 px-5 pt-4 pb-1">
+    <aside className="animate-fade-in-up" style={{
+      margin: '1.5rem 0', borderRadius: 14, overflow: 'hidden',
+      background: c.bg, borderLeft: `3px solid ${c.borderColor}`,
+      padding: '16px 20px',
+    }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, marginBottom: 8 }}>
         {c.icon}
-        <span className="text-[13px] font-semibold" style={{ color: c.labelColor }}>{c.label}</span>
+        <span style={{ fontSize: '13px', fontWeight: 600, color: c.labelColor }}>{c.label}</span>
       </div>
-      <div className="px-5 pb-4 pt-1">
-        <p className="text-[15px] leading-[1.7]" style={{ color: 'var(--color-text-secondary)' }} dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }} />
-      </div>
+      <p style={{ fontSize: '14px', lineHeight: 1.7, color: 'var(--color-text-secondary)' }}
+        dangerouslySetInnerHTML={{ __html: renderMarkdown(content) }} />
     </aside>
   );
 }
@@ -68,37 +71,29 @@ export default function LessonContent({ lesson, chapter, onPrev, onNext, onCompl
 
   const sectionIdMap = {};
   content.sections.forEach((s, i) => {
-    if (s.type === 'heading') {
-      sectionIdMap[i] = `section-${i}`;
-    }
+    if (s.type === 'heading') sectionIdMap[i] = `section-${i}`;
   });
 
   const prevLesson = currentIndex > 0 ? allLessons[currentIndex - 1] : null;
   const nextLesson = currentIndex < allLessons.length - 1 ? allLessons[currentIndex + 1] : null;
 
   return (
-    <div className="relative">
+    <div style={{ position: 'relative' }}>
       <MiniTOC sections={content.sections} />
 
-      <div className="max-w-[720px] mx-auto px-5 sm:px-8 pt-8 pb-32 lg:pb-16 animate-fade-in-up">
-        {/* Mobile breadcrumb */}
-        <nav className="sm:hidden flex items-center gap-1.5 text-[12px] mb-4" style={{ color: 'var(--color-text-muted)' }}>
-          <span>{chapter.title}</span>
-          <svg width="6" height="8" viewBox="0 0 7 10" fill="none" style={{ opacity: 0.5 }}>
-            <path d="M1 1l4 4-4 4" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"/>
-          </svg>
-          <span style={{ color: 'var(--color-text-secondary)' }}>{lesson.title}</span>
-        </nav>
-
-        {/* Title area */}
-        <header className="mb-10">
-          <h1 className="text-[28px] sm:text-[34px] lg:text-[40px] font-bold tracking-tight leading-[1.1] mb-4" style={{ color: 'var(--color-text-primary)' }}>
+      <div className="animate-fade-in-up">
+        {/* Title */}
+        <header style={{ marginBottom: '2.5rem' }}>
+          <div style={{ fontSize: '12px', fontWeight: 500, color: 'var(--color-bronze)', marginBottom: 8, textTransform: 'uppercase', letterSpacing: '0.05em' }}>
+            {chapter.title}
+          </div>
+          <h1 style={{ fontSize: '2rem', fontWeight: 600, lineHeight: 1.2, marginBottom: 12, color: 'var(--color-text-primary)' }}>
             {lesson.title}
           </h1>
-          <p className="text-[16px] sm:text-[17px] leading-[1.7]" style={{ color: 'var(--color-text-secondary)' }}>
+          <p style={{ fontSize: '15px', lineHeight: 1.8, color: 'var(--color-text-secondary)' }}>
             {content.description}
           </p>
-          <div className="mt-6 h-[1px]" style={{ backgroundColor: 'var(--color-separator)' }} />
+          <div style={{ height: 1, background: 'var(--color-border)', marginTop: 24 }} />
         </header>
 
         {/* Sections */}
@@ -107,23 +102,36 @@ export default function LessonContent({ lesson, chapter, onPrev, onNext, onCompl
             const id = sectionIdMap[i];
             switch (section.type) {
               case 'heading': {
-                const Tag = section.level === 2 ? 'h2' : 'h3';
-                const cls = section.level === 2
-                  ? 'text-[22px] sm:text-[26px] font-bold tracking-tight mt-14 mb-4 animate-fade-in-up'
-                  : 'text-[18px] sm:text-[20px] font-semibold mt-10 mb-3 animate-fade-in-up';
-                return <Tag key={i} id={id} className={cls} style={{ color: 'var(--color-text-primary)', lineHeight: 1.2 }}>{section.content}</Tag>;
+                const isH2 = section.level === 2;
+                return (
+                  <div key={i} id={id} className="animate-fade-in-up" style={{
+                    fontSize: isH2 ? '1.5rem' : '1.2rem',
+                    fontWeight: isH2 ? 600 : 600,
+                    marginTop: isH2 ? '2.5rem' : '2rem',
+                    marginBottom: '0.75rem',
+                    color: 'var(--color-text-primary)',
+                    lineHeight: 1.3,
+                  }}>
+                    {section.content}
+                  </div>
+                );
               }
               case 'text':
                 return (
-                  <div key={i} className="text-[15px] sm:text-[16px] leading-[1.8] mb-5 animate-fade-in-up" style={{ color: 'var(--color-text-secondary)' }}
-                    dangerouslySetInnerHTML={{ __html: renderMarkdown(section.content) }} />
+                  <div key={i} className="animate-fade-in-up" style={{
+                    fontSize: '15px', lineHeight: 1.8, marginBottom: '1.25rem',
+                    color: 'var(--color-text-secondary)',
+                  }} dangerouslySetInnerHTML={{ __html: renderMarkdown(section.content) }} />
                 );
               case 'list':
                 return (
-                  <ul key={i} className="mb-6 space-y-2.5 animate-fade-in-up">
+                  <ul key={i} className="animate-fade-in-up" style={{ marginBottom: '1.25rem', listStyle: 'none', padding: 0 }}>
                     {section.items.map((item, j) => (
-                      <li key={j} className="flex gap-3 text-[15px] sm:text-[16px] leading-[1.8]" style={{ color: 'var(--color-text-secondary)' }}>
-                        <span className="shrink-0 mt-[2px]" style={{ color: 'var(--color-bronze)' }}>•</span>
+                      <li key={j} style={{
+                        display: 'flex', gap: 10, fontSize: '15px', lineHeight: 1.8,
+                        color: 'var(--color-text-secondary)', marginBottom: 8,
+                      }}>
+                        <span style={{ color: '#CD7F32', flexShrink: 0, marginTop: 2 }}>•</span>
                         <span dangerouslySetInnerHTML={{ __html: renderMarkdown(item) }} />
                       </li>
                     ))}
@@ -145,63 +153,68 @@ export default function LessonContent({ lesson, chapter, onPrev, onNext, onCompl
           })}
         </div>
 
-        {/* Completion */}
-        <div className="mt-16">
+        {/* Navigation Footer */}
+        <div style={{ marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid var(--color-border)' }}>
+          {/* Mark Complete */}
           {!isCompleted ? (
             <button
               onClick={onComplete}
-              className="w-full py-3.5 rounded-xl text-[15px] font-semibold text-white transition-all cursor-pointer active:scale-[0.98]"
-              style={{ background: 'linear-gradient(135deg, #CD7F32, #B8860B)', boxShadow: '0 2px 12px rgba(205,127,50,0.3)' }}
+              style={{
+                width: '100%', padding: '14px 0', borderRadius: 12, border: 'none',
+                fontSize: '15px', fontWeight: 600, color: '#fff', cursor: 'pointer',
+                background: 'linear-gradient(135deg, #CD7F32, #ec4899)',
+                boxShadow: '0 2px 16px rgba(205,127,50,0.3)',
+                marginBottom: 16, fontFamily: 'var(--font-sans)',
+              }}
             >
-              Mark as Complete
+              ✓ Mark as Complete
             </button>
           ) : (
-            <div className="flex items-center justify-center gap-2 py-3.5 rounded-xl text-[15px] font-semibold animate-scale-in"
-              style={{ color: 'var(--color-success)', backgroundColor: 'rgba(48,209,88,0.08)', border: '1px solid rgba(48,209,88,0.2)' }}>
-              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" className="animate-checkmark">
+            <div className="animate-scale-in" style={{
+              width: '100%', padding: '14px 0', borderRadius: 12, textAlign: 'center',
+              fontSize: '15px', fontWeight: 600, color: 'var(--color-green)',
+              background: 'rgba(16,185,129,0.08)', border: '1px solid rgba(16,185,129,0.2)',
+              marginBottom: 16, display: 'flex', alignItems: 'center', justifyContent: 'center', gap: 8,
+            }}>
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="animate-checkmark">
                 <path d="M20 6L9 17l-5-5"/>
               </svg>
               Lesson Complete
             </div>
           )}
-        </div>
 
-        {/* Navigation cards - Apple style */}
-        <div className="hidden lg:grid grid-cols-2 gap-4 mt-8">
-          {prevLesson ? (
-            <button
-              onClick={onPrev}
-              className="text-left p-5 rounded-xl transition-all cursor-pointer group"
-              style={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-border)' }}
-              onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--color-border-hover)'}
-              onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--color-border)'}
-            >
-              <span className="text-[12px] font-medium" style={{ color: 'var(--color-text-muted)' }}>Previous</span>
-              <div className="flex items-center gap-1.5 mt-1">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--color-bronze)' }}>
-                  <path d="M15 18l-6-6 6-6"/>
-                </svg>
-                <span className="text-[14px] font-semibold" style={{ color: 'var(--color-bronze)' }}>{prevLesson.lesson.title}</span>
-              </div>
-            </button>
-          ) : <div />}
-          {nextLesson ? (
-            <button
-              onClick={onNext}
-              className="text-right p-5 rounded-xl transition-all cursor-pointer group"
-              style={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-border)' }}
-              onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--color-border-hover)'}
-              onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--color-border)'}
-            >
-              <span className="text-[12px] font-medium" style={{ color: 'var(--color-text-muted)' }}>Next</span>
-              <div className="flex items-center justify-end gap-1.5 mt-1">
-                <span className="text-[14px] font-semibold" style={{ color: 'var(--color-bronze)' }}>{nextLesson.lesson.title}</span>
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--color-bronze)' }}>
-                  <path d="M9 18l6-6-6-6"/>
-                </svg>
-              </div>
-            </button>
-          ) : <div />}
+          {/* Prev / Next */}
+          <div className="nav-footer-buttons" style={{ display: 'flex', gap: 12 }}>
+            {prevLesson ? (
+              <button
+                onClick={onPrev}
+                style={{
+                  flex: 1, padding: '12px 16px', borderRadius: 12, cursor: 'pointer',
+                  background: 'rgba(255,255,255,0.05)', border: '1px solid var(--color-border)',
+                  textAlign: 'left', fontFamily: 'var(--font-sans)', transition: 'border-color 0.15s',
+                }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--color-border-hover)'}
+                onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--color-border)'}
+              >
+                <div style={{ fontSize: '11px', color: 'var(--color-text-muted)', marginBottom: 4 }}>← Previous</div>
+                <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--color-text-secondary)' }}>{prevLesson.lesson.title}</div>
+              </button>
+            ) : <div style={{ flex: 1 }} />}
+            {nextLesson ? (
+              <button
+                onClick={onNext}
+                style={{
+                  flex: 1, padding: '12px 16px', borderRadius: 12, cursor: 'pointer',
+                  background: 'linear-gradient(135deg, #CD7F32, #ec4899)', border: 'none',
+                  textAlign: 'right', fontFamily: 'var(--font-sans)',
+                }}
+              >
+                <div style={{ fontSize: '11px', color: 'rgba(255,255,255,0.7)', marginBottom: 4 }}>Next →</div>
+                <div style={{ fontSize: '13px', fontWeight: 600, color: '#fff' }}>{nextLesson.lesson.title}</div>
+              </button>
+            ) : <div style={{ flex: 1 }} />}
+          </div>
+          <style>{`@media (max-width: 768px) { .nav-footer-buttons { flex-direction: column !important; } }`}</style>
         </div>
       </div>
     </div>

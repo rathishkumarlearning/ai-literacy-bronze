@@ -6,57 +6,83 @@ export default function CertificateScreen({ courseTitle, totalLessons }) {
   const date = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-6 sm:p-8" style={{ backgroundColor: 'var(--color-bg-main)' }}>
+    <div style={{
+      minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center',
+      padding: 24, background: 'var(--color-bg-primary)',
+    }}>
       {!showCert ? (
-        <div className="text-center max-w-sm w-full animate-fade-in-up">
-          <div className="w-20 h-20 rounded-full mx-auto mb-6 flex items-center justify-center text-4xl" style={{ backgroundColor: 'var(--color-bronze-subtle)' }}>
-            🎉
-          </div>
-          <h1 className="text-[32px] font-bold tracking-tight mb-3" style={{ color: 'var(--color-text-primary)' }}>
+        <div className="animate-fade-in-up" style={{ textAlign: 'center', maxWidth: 380, width: '100%' }}>
+          <div style={{
+            width: 80, height: 80, borderRadius: '50%', margin: '0 auto 24px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: 40,
+            background: 'rgba(205,127,50,0.1)',
+          }}>🎉</div>
+          <h1 style={{ fontSize: '2rem', fontWeight: 700, marginBottom: 12, color: 'var(--color-text-primary)' }}>
             Congratulations!
           </h1>
-          <p className="text-[16px] leading-[1.6] mb-8" style={{ color: 'var(--color-text-secondary)' }}>
+          <p style={{ fontSize: '15px', lineHeight: 1.6, marginBottom: 32, color: 'var(--color-text-secondary)' }}>
             You've completed all {totalLessons} lessons in<br/>
-            <span style={{ color: 'var(--color-bronze)' }}>{courseTitle}</span>
+            <span style={{ color: '#CD7F32', fontWeight: 600 }}>{courseTitle}</span>
           </p>
           <input
             type="text"
-            placeholder="Your name"
+            placeholder="Enter your name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-4 py-3.5 rounded-xl text-[15px] mb-4 outline-none text-center transition-colors"
-            style={{ backgroundColor: 'var(--color-bg-card)', color: 'var(--color-text-primary)', border: '1px solid var(--color-border)' }}
+            style={{
+              width: '100%', padding: '14px 16px', borderRadius: 12, fontSize: '15px',
+              textAlign: 'center', border: '1px solid var(--color-border)',
+              background: 'var(--color-bg-card)', color: 'var(--color-text-primary)',
+              outline: 'none', fontFamily: 'var(--font-sans)', marginBottom: 12,
+            }}
           />
           <button
             onClick={() => name.trim() && setShowCert(true)}
             disabled={!name.trim()}
-            className="w-full py-3.5 rounded-xl font-semibold text-[15px] text-white transition-all cursor-pointer active:scale-[0.98]"
             style={{
-              background: name.trim() ? 'linear-gradient(135deg, #CD7F32, #B8860B)' : 'var(--color-text-muted)',
+              width: '100%', padding: '14px 0', borderRadius: 12, border: 'none',
+              fontSize: '15px', fontWeight: 600, color: '#fff', cursor: name.trim() ? 'pointer' : 'default',
+              fontFamily: 'var(--font-sans)',
+              background: name.trim() ? 'linear-gradient(135deg, #CD7F32, #ec4899)' : 'var(--color-text-muted)',
               opacity: name.trim() ? 1 : 0.4,
-              boxShadow: name.trim() ? '0 2px 12px rgba(205,127,50,0.3)' : 'none',
+              boxShadow: name.trim() ? '0 2px 16px rgba(205,127,50,0.3)' : 'none',
             }}
           >
             Generate Certificate
           </button>
         </div>
       ) : (
-        <div className="w-full max-w-xl animate-scale-in">
-          <div className="p-[2px] rounded-2xl" style={{ background: 'linear-gradient(135deg, #CD7F32, #B8860B, #D4A574, #CD7F32)' }}>
-            <div className="rounded-[14px] px-8 py-12 sm:px-12 sm:py-16 text-center" style={{ backgroundColor: 'var(--color-bg-card)' }}>
-              <div className="text-[11px] font-semibold uppercase tracking-[0.3em] mb-8" style={{ color: 'var(--color-bronze)' }}>
+        <div className="animate-scale-in" style={{ width: '100%', maxWidth: 560 }}>
+          <div style={{
+            padding: 3, borderRadius: 20,
+            background: 'linear-gradient(135deg, #CD7F32, #ec4899, #06b6d4, #CD7F32)',
+          }}>
+            <div style={{
+              borderRadius: 17, padding: '48px 32px', textAlign: 'center',
+              background: 'var(--color-bg-primary)',
+            }}>
+              <div style={{
+                fontSize: '11px', fontWeight: 700, textTransform: 'uppercase',
+                letterSpacing: '0.3em', marginBottom: 32, color: '#CD7F32',
+              }}>
                 Certificate of Completion
               </div>
-              <div className="w-12 h-[1px] mx-auto mb-8" style={{ backgroundColor: 'var(--color-separator)' }} />
-              <p className="text-[13px] mb-2" style={{ color: 'var(--color-text-muted)' }}>This certifies that</p>
-              <h2 className="text-[28px] sm:text-[34px] font-bold tracking-tight mb-2" style={{ color: 'var(--color-bronze-hover)' }}>{name}</h2>
-              <p className="text-[14px] mb-8 leading-[1.6]" style={{ color: 'var(--color-text-secondary)' }}>
+              <div style={{ width: 48, height: 1, margin: '0 auto 32px', background: 'var(--color-border)' }} />
+              <p style={{ fontSize: '13px', marginBottom: 8, color: 'var(--color-text-muted)' }}>This certifies that</p>
+              <h2 style={{
+                fontSize: '2rem', fontWeight: 700, marginBottom: 8,
+                background: 'linear-gradient(135deg, #CD7F32, #ec4899)',
+                WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent',
+              }}>{name}</h2>
+              <p style={{ fontSize: '14px', marginBottom: 32, lineHeight: 1.6, color: 'var(--color-text-secondary)' }}>
                 has successfully completed all {totalLessons} lessons of
               </p>
-              <h3 className="text-[20px] font-bold mb-10" style={{ color: 'var(--color-text-primary)' }}>{courseTitle}</h3>
-              <div className="w-12 h-[1px] mx-auto mb-4" style={{ backgroundColor: 'var(--color-separator)' }} />
-              <p className="text-[12px]" style={{ color: 'var(--color-text-muted)' }}>{date}</p>
-              <div className="text-3xl mt-6">🏆</div>
+              <h3 style={{ fontSize: '1.25rem', fontWeight: 700, marginBottom: 40, color: 'var(--color-text-primary)' }}>
+                {courseTitle}
+              </h3>
+              <div style={{ width: 48, height: 1, margin: '0 auto 16px', background: 'var(--color-border)' }} />
+              <p style={{ fontSize: '12px', color: 'var(--color-text-muted)' }}>{date}</p>
+              <div style={{ fontSize: '2rem', marginTop: 20 }}>🏆</div>
             </div>
           </div>
         </div>

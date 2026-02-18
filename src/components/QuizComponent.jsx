@@ -1,5 +1,7 @@
 import { useState } from 'react';
 
+const letters = ['A', 'B', 'C', 'D', 'E', 'F'];
+
 export default function QuizComponent({ question, options, correct, explanation }) {
   const [selected, setSelected] = useState(null);
   const [showResult, setShowResult] = useState(false);
@@ -17,54 +19,79 @@ export default function QuizComponent({ question, options, correct, explanation 
   const isCorrect = selected === correct;
 
   return (
-    <div className="my-8 rounded-xl overflow-hidden animate-fade-in-up" style={{ backgroundColor: 'var(--color-bg-card)', border: '1px solid var(--color-border)' }}>
+    <div className="animate-fade-in-up" style={{
+      margin: '2rem 0', borderRadius: 16, overflow: 'hidden',
+      background: 'var(--color-bg-card)', border: '1px solid var(--color-border)',
+    }}>
       {/* Header */}
-      <div className="flex items-center gap-2 px-5 sm:px-6 py-4" style={{ borderBottom: '1px solid var(--color-separator)' }}>
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ color: 'var(--color-bronze)' }}>
+      <div style={{
+        display: 'flex', alignItems: 'center', gap: 8,
+        padding: '14px 20px', borderBottom: '1px solid var(--color-border)',
+      }}>
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#CD7F32" strokeWidth="2">
           <circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3M12 17h.01"/>
         </svg>
-        <span className="text-[14px] font-semibold" style={{ color: 'var(--color-bronze)' }}>Knowledge Check</span>
+        <span style={{ fontSize: '14px', fontWeight: 600, color: '#CD7F32' }}>Knowledge Check</span>
       </div>
 
-      <div className="px-5 sm:px-6 py-5">
-        <p className="text-[16px] font-medium mb-5 leading-[1.5]" style={{ color: 'var(--color-text-primary)' }}>{question}</p>
+      <div style={{ padding: '20px' }}>
+        <p style={{ fontSize: '15px', fontWeight: 600, marginBottom: 16, lineHeight: 1.5, color: 'var(--color-text-primary)' }}>
+          {question}
+        </p>
 
-        <div className="space-y-2.5">
-          {options.map((opt) => {
+        <div style={{ display: 'flex', flexDirection: 'column', gap: 10 }}>
+          {options.map((opt, i) => {
             let borderColor = 'var(--color-border)';
             let bg = 'transparent';
-            let ringColor = 'var(--color-text-muted)';
+            let letterBg = 'transparent';
+            let letterColor = 'var(--color-text-muted)';
+            let icon = null;
 
             if (showResult && opt.id === correct) {
-              borderColor = 'var(--color-success)';
-              bg = 'rgba(48, 209, 88, 0.06)';
-              ringColor = 'var(--color-success)';
+              borderColor = 'var(--color-green)';
+              bg = 'rgba(16,185,129,0.08)';
+              letterBg = 'var(--color-green)';
+              letterColor = '#fff';
+              icon = <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-green)" strokeWidth="3"><path d="M20 6L9 17l-5-5"/></svg>;
             } else if (showResult && opt.id === selected && !isCorrect) {
               borderColor = 'var(--color-error)';
-              bg = 'rgba(255, 69, 58, 0.06)';
-              ringColor = 'var(--color-error)';
+              bg = 'rgba(239,68,68,0.08)';
+              letterBg = 'var(--color-error)';
+              letterColor = '#fff';
+              icon = <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="var(--color-error)" strokeWidth="3"><path d="M18 6L6 18M6 6l12 12"/></svg>;
             } else if (selected === opt.id && !showResult) {
-              borderColor = 'var(--color-bronze)';
-              bg = 'var(--color-bronze-subtle)';
-              ringColor = 'var(--color-bronze)';
+              borderColor = '#CD7F32';
+              bg = 'rgba(205,127,50,0.1)';
+              letterBg = '#CD7F32';
+              letterColor = '#fff';
             }
 
             return (
               <button
                 key={opt.id}
                 onClick={() => handleSelect(opt.id)}
-                className="w-full text-left px-4 py-3.5 rounded-xl transition-all flex items-center gap-3.5 cursor-pointer active:scale-[0.99]"
-                style={{ border: `1.5px solid ${borderColor}`, backgroundColor: bg }}
+                style={{
+                  width: '100%', textAlign: 'left', padding: '12px 16px',
+                  borderRadius: 12, border: `2px solid ${borderColor}`,
+                  background: bg, cursor: showResult ? 'default' : 'pointer',
+                  display: 'flex', alignItems: 'center', gap: 12,
+                  fontFamily: 'var(--font-sans)', transition: 'all 0.15s',
+                }}
               >
-                <span className="w-7 h-7 rounded-full flex items-center justify-center text-[12px] font-semibold shrink-0 transition-all"
-                  style={{
-                    border: `2px solid ${ringColor}`,
-                    color: ringColor,
-                    backgroundColor: selected === opt.id ? `${ringColor}15` : 'transparent',
-                  }}>
-                  {opt.id.toUpperCase()}
+                {/* Letter marker */}
+                <div style={{
+                  width: 28, height: 28, borderRadius: 8, flexShrink: 0,
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: '13px', fontWeight: 700, transition: 'all 0.15s',
+                  background: letterBg, color: letterColor,
+                  border: letterBg === 'transparent' ? '2px solid var(--color-border)' : 'none',
+                }}>
+                  {letters[i]}
+                </div>
+                <span style={{ fontSize: '14px', lineHeight: 1.5, color: 'var(--color-text-primary)', flex: 1 }}>
+                  {opt.text}
                 </span>
-                <span className="text-[15px] leading-[1.5]" style={{ color: 'var(--color-text-primary)' }}>{opt.text}</span>
+                {icon && <span style={{ flexShrink: 0 }}>{icon}</span>}
               </button>
             );
           })}
@@ -74,11 +101,13 @@ export default function QuizComponent({ question, options, correct, explanation 
           <button
             onClick={handleSubmit}
             disabled={!selected}
-            className="mt-5 px-6 py-2.5 rounded-xl text-[14px] font-semibold transition-all cursor-pointer active:scale-[0.97]"
             style={{
-              backgroundColor: selected ? 'var(--color-bronze)' : 'var(--color-text-muted)',
-              color: '#fff',
+              marginTop: 16, padding: '10px 24px', borderRadius: 12, border: 'none',
+              fontSize: '14px', fontWeight: 600, cursor: selected ? 'pointer' : 'default',
+              color: '#fff', fontFamily: 'var(--font-sans)',
+              background: selected ? 'linear-gradient(135deg, #CD7F32, #ec4899)' : 'var(--color-text-muted)',
               opacity: selected ? 1 : 0.4,
+              transition: 'all 0.15s',
             }}
           >
             Check Answer
@@ -86,14 +115,15 @@ export default function QuizComponent({ question, options, correct, explanation 
         )}
 
         {showResult && (
-          <div className="mt-5 p-4 rounded-xl animate-scale-in" style={{
-            backgroundColor: isCorrect ? 'rgba(48, 209, 88, 0.06)' : 'rgba(255, 69, 58, 0.06)',
-            border: `1px solid ${isCorrect ? 'rgba(48,209,88,0.2)' : 'rgba(255,69,58,0.2)'}`,
+          <div className="animate-scale-in" style={{
+            marginTop: 16, padding: 16, borderRadius: 12,
+            background: isCorrect ? 'rgba(16,185,129,0.08)' : 'rgba(239,68,68,0.08)',
+            border: `1px solid ${isCorrect ? 'rgba(16,185,129,0.2)' : 'rgba(239,68,68,0.2)'}`,
           }}>
-            <p className="text-[14px] font-semibold mb-1" style={{ color: isCorrect ? 'var(--color-success)' : 'var(--color-error)' }}>
+            <p style={{ fontSize: '14px', fontWeight: 600, marginBottom: 4, color: isCorrect ? 'var(--color-green)' : 'var(--color-error)' }}>
               {isCorrect ? '✓ Correct!' : '✗ Not quite'}
             </p>
-            <p className="text-[14px] leading-[1.6]" style={{ color: 'var(--color-text-secondary)' }}>{explanation}</p>
+            <p style={{ fontSize: '14px', lineHeight: 1.6, color: 'var(--color-text-secondary)' }}>{explanation}</p>
           </div>
         )}
       </div>
